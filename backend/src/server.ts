@@ -8,6 +8,7 @@ import { config } from './config/config'
 import { logger } from './utils/logger'
 import { errorHandler } from './middleware/errorHandler'
 import { connectDatabase } from './config/database'
+import authRoutes from './routes/authRoutes'
 
 const app = express()
 
@@ -37,10 +38,13 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
 })
 
-// API routes will be added here
+// API routes
 app.get('/api', (req, res) => {
   res.json({ message: 'Book Review Platform API' })
 })
+
+// Authentication routes
+app.use('/api/auth', authRoutes)
 
 // Error handling middleware
 app.use(errorHandler)
