@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit'
 import { config } from './config/config'
 import { logger } from './utils/logger'
 import { errorHandler } from './middleware/errorHandler'
+import { connectDatabase } from './config/database'
 
 const app = express()
 
@@ -51,9 +52,24 @@ app.use('*', (req, res) => {
 
 const PORT = config.port || 5000
 
-app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`)
-  logger.info(`Environment: ${config.nodeEnv}`)
-})
+const startServer = async () => {
+  try {
+    // Connect to database
+    await connectDatabase()
+    
+    app.listen(PORT, () => {
+      logger.info(`Server running on port ${PORT}`)
+      logger.info(`Environment: ${config.nodeEnv}`)
+    })
+  } catch (error) {
+    logger.error('Failed to start server:', error)
+    process.exit(1)
+  }
+}
+
+// Start the server
+if (require.main === module) {
+  startServer()
+}
 
 export default app

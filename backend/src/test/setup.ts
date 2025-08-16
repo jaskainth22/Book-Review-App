@@ -1,10 +1,17 @@
+import 'reflect-metadata'
+
+// Set test environment
+process.env.NODE_ENV = 'test'
+process.env.DB_NAME = 'book_review_platform_test'
+
 // Global test setup
 beforeAll(async () => {
-  // Setup test database connection, etc.
+  // Test environment is set up in individual test files
+  // to allow for proper database isolation
 })
 
 afterAll(async () => {
-  // Cleanup test database connection, etc.
+  // Cleanup is handled in individual test files
 })
 
 beforeEach(() => {

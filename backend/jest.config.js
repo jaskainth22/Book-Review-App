@@ -11,11 +11,12 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/server.ts',
     '!src/config/**',
+    '!src/migrations/**',
+    '!src/seeds/**',
+    '!src/utils/migrationRunner.ts',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
-  moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
+  testTimeout: 30000, // Increase timeout for database tests
 };
