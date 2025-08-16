@@ -59,7 +59,7 @@ export class User extends Model {
   displayName!: string
 
   @Column(DataType.STRING(255))
-  passwordHash?: string
+  passwordHash?: string | null
 
   @Column(DataType.TEXT)
   avatar?: string
@@ -73,7 +73,7 @@ export class User extends Model {
 
   @Unique
   @Column(DataType.STRING(255))
-  googleId?: string
+  googleId?: string | null
 
   @Default({
     profileVisibility: 'public',

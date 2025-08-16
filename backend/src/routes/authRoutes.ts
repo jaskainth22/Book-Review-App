@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import passport from 'passport'
 import { AuthController } from '../controllers/authController'
 import { authenticateToken } from '../middleware/auth'
 import rateLimit from 'express-rate-limit'
@@ -42,8 +43,20 @@ router.post('/password-reset/request', passwordResetLimiter, AuthController.requ
 router.post('/password-reset/confirm', AuthController.resetPassword)
 router.post('/verify-email', AuthController.verifyEmail)
 
+// Google OAuth routes
+router.get('/google', AuthController.googleAuth)
+router.get('/google/callback', 
+  passport.authenticate('google', { 
+    failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=OAuth failed`,
+    session: false 
+  }),
+  AuthController.googleCallback
+)
+
 // Protected routes
 router.get('/profile', authenticateToken, AuthController.getProfile)
 router.post('/logout', authenticateToken, AuthController.logout)
+router.post('/google/link', authenticateToken, AuthController.linkGoogleAccount)
+router.post('/google/unlink', authenticateToken, AuthController.unlinkGoogleAccount)
 
 export default router

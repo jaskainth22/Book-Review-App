@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
+import passport from 'passport'
 import { AuthService } from '../services/authService'
 import { logger } from '../utils/logger'
+import { User } from '../models/User'
 import {
     registerSchema,
     loginSchema,
@@ -331,6 +333,134 @@ export class AuthController {
                 error: {
                     code: 'LOGOUT_ERROR',
                     message: 'Logout failed'
+                }
+            })
+        }
+    }
+
+    /**
+     * Initiate Google OAuth authentication
+     */
+    static googleAuth = passport.authenticate('google', {
+        scope: ['profile', 'email']
+    })
+
+    /**
+     * Handle Google OAuth callback
+     */
+    static async googleCallback(req: Request, res: Response): Promise<void> {
+        try {
+            const user = req.user as User
+            if (!user) {
+                // Redirect to frontend with error
+                const errorUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=Authentication failed`
+                res.redirect(errorUrl)
+                return
+            }
+
+            // Generate tokens
+            const authResult = await AuthService.googleOAuth(user)
+
+            // Redirect to frontend with tokens
+            const successUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/success?token=${authResult.token}&refreshToken=${authResult.refreshToken}`
+            res.redirect(successUrl)
+        } catch (error) {
+            logger.error('Google OAuth callback error:', error)
+            
+            const errorUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=Authentication failed`
+            res.redirect(errorUrl)
+        }
+    }
+
+    /**
+     * Link Google account to existing user
+     */
+    static async linkGoogleAccount(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.user) {
+                res.status(401).json({
+                    success: false,
+                    error: {
+                        code: 'AUTHENTICATION_REQUIRED',
+                        message: 'Authentication required'
+                    }
+                })
+                return
+            }
+
+            const { googleId } = req.body
+            if (!googleId) {
+                res.status(400).json({
+                    success: false,
+                    error: {
+                        code: 'VALIDATION_ERROR',
+                        message: 'Google ID is required'
+                    }
+                })
+                return
+            }
+
+            const user = await AuthService.linkGoogleAccount((req.user as User).id, googleId)
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    user,
+                    message: 'Google account linked successfully'
+                }
+            })
+        } catch (error) {
+            logger.error('Link Google account error:', error)
+
+            const message = error instanceof Error ? error.message : 'Failed to link Google account'
+            const statusCode = message.includes('already linked') ? 409 : 500
+
+            res.status(statusCode).json({
+                success: false,
+                error: {
+                    code: 'GOOGLE_LINK_ERROR',
+                    message
+                }
+            })
+        }
+    }
+
+    /**
+     * Unlink Google account from user
+     */
+    static async unlinkGoogleAccount(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.user) {
+                res.status(401).json({
+                    success: false,
+                    error: {
+                        code: 'AUTHENTICATION_REQUIRED',
+                        message: 'Authentication required'
+                    }
+                })
+                return
+            }
+
+            const user = await AuthService.unlinkGoogleAccount((req.user as User).id)
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    user,
+                    message: 'Google account unlinked successfully'
+                }
+            })
+        } catch (error) {
+            logger.error('Unlink Google account error:', error)
+
+            const message = error instanceof Error ? error.message : 'Failed to unlink Google account'
+            const statusCode = message.includes('No Google account') || message.includes('Cannot unlink') ? 400 : 500
+
+            res.status(statusCode).json({
+                success: false,
+                error: {
+                    code: 'GOOGLE_UNLINK_ERROR',
+                    message
                 }
             })
         }

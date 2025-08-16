@@ -29,6 +29,13 @@ export interface TokenPayload {
   exp?: number
 }
 
+export interface GoogleOAuthData {
+  googleId: string
+  email: string
+  displayName: string
+  avatar?: string
+}
+
 export class AuthService {
   private static readonly JWT_SECRET = config.jwt.secret || 'fallback-secret'
   private static readonly JWT_REFRESH_SECRET = config.jwt.refreshSecret || 'fallback-refresh-secret'
@@ -316,5 +323,73 @@ export class AuthService {
       this.JWT_SECRET,
       { expiresIn: '24h' } as SignOptions
     )
+  }
+
+  /**
+   * Handle Google OAuth authentication
+   */
+  static async googleOAuth(user: User): Promise<AuthResult> {
+    // Generate tokens for the authenticated user
+    const token = this.generateToken(user)
+    const refreshToken = this.generateRefreshToken(user)
+
+    logger.info(`Google OAuth successful for user: ${user.email}`)
+
+    return {
+      user,
+      token,
+      refreshToken
+    }
+  }
+
+  /**
+   * Link existing account with Google OAuth
+   */
+  static async linkGoogleAccount(userId: string, googleId: string): Promise<User> {
+    const user = await User.findByPk(userId)
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    // Check if Google ID is already linked to another account
+    const existingGoogleUser = await User.findOne({
+      where: { googleId }
+    })
+
+    if (existingGoogleUser && existingGoogleUser.id !== userId) {
+      throw new Error('This Google account is already linked to another user')
+    }
+
+    // Link the Google account
+    user.googleId = googleId
+    await user.save()
+
+    logger.info(`Google account linked for user: ${user.email}`)
+    return user
+  }
+
+  /**
+   * Unlink Google account
+   */
+  static async unlinkGoogleAccount(userId: string): Promise<User> {
+    const user = await User.findByPk(userId)
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    if (!user.googleId) {
+      throw new Error('No Google account linked')
+    }
+
+    // Ensure user has a password before unlinking Google
+    if (!user.passwordHash) {
+      throw new Error('Cannot unlink Google account without setting a password first')
+    }
+
+    user.googleId = null
+    await user.save()
+
+    logger.info(`Google account unlinked for user: ${user.email}`)
+    return user
   }
 }

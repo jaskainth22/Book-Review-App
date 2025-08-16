@@ -8,7 +8,7 @@
   - Set up environment variables and configuration management
   - _Requirements: Foundation for all requirements_
 
-- [ ] 2. Implement database schema and models
+- [x] 2. Implement database schema and models
   - Create PostgreSQL database schema with migrations
   - Implement User, Book, Review, Comment, and ReadingListEntry models
   - Set up database connection and ORM configuration
@@ -16,8 +16,8 @@
   - Write unit tests for model validations
   - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
 
-- [ ] 3. Build authentication system foundation
-- [ ] 3.1 Implement user registration and login backend
+- [-] 3. Build authentication system foundation
+- [x] 3.1 Implement user registration and login backend
   - Create user registration endpoint with email validation
   - Implement password hashing and login authentication
   - Set up JWT token generation and validation middleware
@@ -25,7 +25,7 @@
   - Write unit tests for authentication logic
   - _Requirements: 1.1, 1.2, 1.4, 2.1, 2.2, 2.4_
 
-- [ ] 3.2 Implement Google OAuth integration
+- [x] 3.2 Implement Google OAuth integration
   - Set up Passport.js with Google OAuth strategy
   - Create OAuth callback endpoints
   - Implement account linking for existing users

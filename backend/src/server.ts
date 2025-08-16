@@ -4,6 +4,8 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import compression from 'compression'
 import rateLimit from 'express-rate-limit'
+import './config/passport'
+import passport from 'passport'
 import { config } from './config/config'
 import { logger } from './utils/logger'
 import { errorHandler } from './middleware/errorHandler'
@@ -32,6 +34,9 @@ app.use(compression())
 app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
+
+// Initialize Passport
+app.use(passport.initialize())
 
 // Health check endpoint
 app.get('/health', (req, res) => {
