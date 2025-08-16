@@ -104,10 +104,11 @@ export interface PaginatedResponse<T> {
 
 export interface AuthContextType {
   user: User | null
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>
   register: (userData: RegisterData) => Promise<void>
   logout: () => void
   loading: boolean
+  googleLogin: () => Promise<void>
 }
 
 export interface RegisterData {

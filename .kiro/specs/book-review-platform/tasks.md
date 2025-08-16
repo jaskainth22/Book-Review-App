@@ -33,7 +33,7 @@
   - Write integration tests for OAuth flow
   - _Requirements: 1.1, 1.3, 2.1_
 
-- [ ] 3.3 Build authentication frontend components
+- [x] 3.3 Build authentication frontend components
   - Create LoginForm component with form validation
   - Implement RegisterForm with email verification UI
   - Build Google OAuth login button component
