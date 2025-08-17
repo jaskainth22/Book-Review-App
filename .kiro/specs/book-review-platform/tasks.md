@@ -62,7 +62,7 @@
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 4.1, 4.2, 4.4, 4.5_
 
 - [ ] 5. Build review system
-- [ ] 5.1 Implement review backend services
+- [x] 5.1 Implement review backend services
   - Create review creation and update endpoints
   - Implement review retrieval with pagination
   - Build rating calculation and aggregation logic
@@ -71,7 +71,7 @@
   - Write unit tests for review service
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 5.2 Create review frontend components
+- [x] 5.2 Create review frontend components
   - Build ReviewForm component with rating system
   - Implement ReviewCard component with user information
   - Create ReviewList with sorting and filtering

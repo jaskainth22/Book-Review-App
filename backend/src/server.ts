@@ -12,6 +12,8 @@ import { errorHandler } from './middleware/errorHandler'
 import { connectDatabase } from './config/database'
 import authRoutes from './routes/authRoutes'
 import bookRoutes from './routes/bookRoutes'
+import reviewRoutes from './routes/reviewRoutes'
+import userRoutes from './routes/userRoutes'
 
 const app = express()
 
@@ -54,6 +56,12 @@ app.use('/api/auth', authRoutes)
 
 // Book routes
 app.use('/api/books', bookRoutes)
+
+// Review routes
+app.use('/api/reviews', reviewRoutes)
+
+// User routes
+app.use('/api/users', userRoutes)
 
 // Error handling middleware
 app.use(errorHandler)

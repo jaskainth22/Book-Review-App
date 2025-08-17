@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { bookController } from '../controllers/bookController';
+import { ReviewController } from '../controllers/reviewController';
 import { authenticateToken } from '../middleware/auth';
+import { validateQuery, reviewQuerySchema } from '../validation/reviewValidation';
 import rateLimit from 'express-rate-limit';
 
 const router = Router();
@@ -44,5 +46,8 @@ router.get('/:id', bookController.getBookById.bind(bookController));
 // Protected routes (authentication required)
 router.post('/', authenticateToken, modifyRateLimit, bookController.addBook.bind(bookController));
 router.put('/:id', authenticateToken, modifyRateLimit, bookController.updateBook.bind(bookController));
+
+// Book-specific review routes
+router.get('/:bookId/reviews', validateQuery(reviewQuerySchema), ReviewController.getBookReviews);
 
 export default router;
