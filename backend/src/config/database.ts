@@ -1,10 +1,12 @@
 import { Sequelize } from 'sequelize-typescript'
+import { createClient } from 'redis'
 import { config } from './config'
 import { User } from '../models/User'
 import { Book } from '../models/Book'
 import { Review } from '../models/Review'
 import { Comment } from '../models/Comment'
 import { ReadingListEntry } from '../models/ReadingListEntry'
+import { logger } from '../utils/logger'
 
 export const sequelize = new Sequelize({
   database: config.database.name,
@@ -27,6 +29,31 @@ export const sequelize = new Sequelize({
     freezeTableName: true,
   },
 })
+
+// Redis client configuration
+export const redisClient = createClient({
+  socket: {
+    host: config.redis.host,
+    port: config.redis.port,
+  },
+  password: config.redis.password || undefined,
+})
+
+// Initialize Redis connection
+const connectRedis = async (): Promise<void> => {
+  try {
+    await redisClient.connect()
+    logger.info('Redis connection established successfully.')
+  } catch (error) {
+    logger.error('Unable to connect to Redis:', error)
+    // Don't throw error - Redis is optional for basic functionality
+  }
+}
+
+// Initialize Redis connection
+if (config.nodeEnv !== 'test') {
+  connectRedis()
+}
 
 export const connectDatabase = async (): Promise<void> => {
   try {

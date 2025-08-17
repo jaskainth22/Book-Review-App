@@ -11,6 +11,7 @@ import { logger } from './utils/logger'
 import { errorHandler } from './middleware/errorHandler'
 import { connectDatabase } from './config/database'
 import authRoutes from './routes/authRoutes'
+import bookRoutes from './routes/bookRoutes'
 
 const app = express()
 
@@ -50,6 +51,9 @@ app.get('/api', (req, res) => {
 
 // Authentication routes
 app.use('/api/auth', authRoutes)
+
+// Book routes
+app.use('/api/books', bookRoutes)
 
 // Error handling middleware
 app.use(errorHandler)

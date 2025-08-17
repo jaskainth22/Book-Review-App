@@ -42,8 +42,8 @@
   - Write unit tests for authentication components
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3_
 
-- [ ] 4. Implement book search and discovery system
-- [ ] 4.1 Create book service backend
+- [x] 4. Implement book search and discovery system
+- [x] 4.1 Create book service backend
   - Implement Google Books API integration
   - Create book search endpoint with filtering
   - Build book detail retrieval functionality
@@ -52,7 +52,7 @@
   - Write unit tests for book service
   - _Requirements: 3.1, 3.2, 3.4, 4.1, 4.4_
 
-- [ ] 4.2 Build book search frontend components
+- [x] 4.2 Build book search frontend components
   - Create BookSearch component with real-time search
   - Implement BookCard component for search results
   - Build BookDetail page with comprehensive information
